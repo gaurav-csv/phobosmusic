@@ -3,907 +3,516 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phobos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Phobos Music | Ultimate Music Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/yourkitcode.js" crossorigin="anonymous"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
         :root {
-            --primary: #8d67ff;
-            --primary-light: #b694ff;
-            --card-bg: #181818;
-            --bg: #121212;
-            --secondary: #282828;
-            --text: #ffffff;
-            --text-secondary: #b3b3b3;
-            --bg: #121212;
-            --card-bg: #181818;
-            --hover-bg: #282828;
+            --phobos-primary: #9333ea;
+            --phobos-secondary: #7c3aed;
+            --phobos-dark: #1e1e2d;
+            --phobos-light: #f8f9fa;
         }
-
-        * {
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--phobos-dark);
+            color: var(--phobos-light);
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text); 
-            min-height: 100vh;
             overflow-x: hidden;
-            font-family: 'Inter', sans-serif;
-            opacity: 0;
-            animation: fadeIn 0.8s ease forwards;
         }
-
+        
+        /* Animation classes */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
         @keyframes fadeIn {
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        @keyframes gradientPulse {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
         }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid var(--secondary);
-            margin-bottom: 30px;
+        
+        .rotate-album {
+            animation: rotateAlbum 20s linear infinite;
         }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        
+        @keyframes rotateAlbum {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
-
-        .logo-icon {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px;
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-
-        .logo-text {
-            font-size: 28px;
-            font-weight: 700;
-            background: linear-gradient(90deg, var(--primary), var(--primary-light));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: gradientShift 6s ease infinite;
+        
+        ::-webkit-scrollbar-track {
+            background: #2d2d3d;
         }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .search-container {
-            display: flex;
-            gap: 10px;
-            width: 50%;
-        }
-
-        .search-input {
-            flex-grow: 1;
-            padding: 12px 20px;
-            background: var(--card-bg);
-            border: none;
-            border-radius: 30px;
-            color: var(--text);
-            font-size: 14px;
-        }
-
-        .search-input:focus {
-            outline: none;
-        }
-
-        .search-btn {
-            background: linear-gradient(90deg, var(--primary), var(--primary-light));
-            color: white;
-            border: none;
-            border-radius: 30px;
-            padding: 0 20px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(141, 103, 255, 0.3);
-        }
-
-        .search-btn:hover {
-            background: #cc0000;
-            transform: scale(1.02);
-        }
-
-        .main-content {
-            display: flex;
-            gap: 30px;
-        }
-
-        .player-section {
-            flex: 2;
-        }
-
-        .player-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .player-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(141, 103, 255, 0.4);
-        }
-
-        .now-playing {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .thumbnail {
-            width: 200px;
-            height: 200px;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .thumbnail img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .track-info {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .track-title {
-            font-size: 22px;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-
-        .track-artist {
-            color: var(--text-secondary);
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-
-        .progress-container {
-            margin: 20px 0;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: var(--secondary);
-            border-radius: 2px;
-            margin-bottom: 5px;
-            cursor: pointer;
-            overflow: hidden;
-        }
-
-        .progress {
-            height: 100%;
-            background: linear-gradient(to right, var(--primary), var(--primary-light));
-            width: 0;
-            transition: width 0.1s;
-            position: relative;
-            border-radius: 3px;
-        }
-
-        .progress::after {
-            content: '';
-            position: absolute;
-            right: -5px;
-            top: -3px;
-            width: 10px;
-            height: 10px;
-            background: var(--primary-light);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--primary);
-        }
-
-        .time-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .control-btn {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 24px;
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 50%;
-            transition: all 0.2s;
-        }
-
-        .control-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .play-btn {
-            background: var(--primary);
-            width: 50px;
-            height: 50px;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .play-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .lyrics-container {
-            height: 200px;
-            margin: 20px 0;
-            overflow-y: auto;
-            padding: 15px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            font-size: 16px;
-            line-height: 1.6;
-            color: var(--text-secondary);
-            font-family: 'Inter', sans-serif;
-        }
-
-        .lyrics-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .lyrics-container::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 3px;
-        }
-
-        .queue-section {
-            flex: 1;
-            height: 70vh;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .queue-section::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .queue-section::-webkit-scrollbar-track {
-            background: var(--card-bg);
-            border-radius: 3px;
-        }
-
-        .queue-section::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 3px;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .action-btn {
-            background: transparent;
-            border: 1px solid var(--secondary);
-            color: var(--text-secondary);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .action-btn:hover {
-            background: rgba(255,255,255,0.1);
-        }
-
-        .tabs {
-            display: flex;
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--secondary);
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            padding: 8px 16px;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .tab-btn.active {
-            color: var(--primary);
-        }
-
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--primary);
-        }
-
-        .queue-list {
-            list-style: none;
-        }
-
-        .queue-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            background: var(--card-bg);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .queue-item:hover {
-            background: var(--hover-bg);
-        }
-
-        .queue-item.active {
-            background: rgba(255, 0, 0, 0.1);
-        }
-
-        .queue-thumbnail {
-            width: 50px;
-            height: 50px;
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--phobos-primary);
             border-radius: 4px;
-            overflow: hidden;
         }
-
-        .queue-thumbnail img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .queue-item-info {
-            flex-grow: 1;
-        }
-
-        .queue-item-title {
-            font-size: 14px;
-            margin-bottom: 3px;
-        }
-
-        .queue-item-artist {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .queue-item-duration {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
+        
+        /* Responsive adjustments */
         @media (max-width: 768px) {
-            .main-content {
-                flex-direction: column;
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                position: fixed;
+                z-index: 20;
+                height: 100vh;
             }
-            .now-playing {
-                flex-direction: column;
+            
+            .sidebar.active {
+                transform: translateX(0);
             }
-            .thumbnail {
-                width: 100%;
-                aspect-ratio: 1/1;
-            }
-            .search-container {
-                width: 100%;
+            
+            .mobile-menu-btn {
+                display: block;
             }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <div class="logo">
-                <div class="logo-icon">
-                    <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="var(--primary)" stroke-width="2">
-                        <path d="M6 15l6-6 6 6"/>
-                        <circle cx="12" cy="12" r="10"/>
-                    </svg>
-                </div>
-                <div class="logo-text">Phobos</div>
+<body class="flex flex-col h-screen">
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn fixed top-4 left-4 z-30 bg-purple-700 p-2 rounded-full md:hidden">
+        <i class="fas fa-bars text-white"></i>
+    </button>
+    
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar w-64 bg-gray-900 text-white flex flex-col">
+            <div class="p-6">
+                <h1 class="text-2xl font-bold text-purple-400">PHOBOS <span class="text-white">MUSIC</span></h1>
             </div>
-            <div class="search-container">
-                <input type="text" class="search-input" placeholder="Search for songs...">
-                <button class="search-btn">Search</button>
-            </div>
-        </header>
-
-        <div class="main-content">
-            <div class="player-section">
-                <div class="player-card">
-                    <div class="now-playing">
-                        <div class="thumbnail">
-                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e8321eb5-ecff-47e2-a10e-c68792f40943.png" alt="Album artwork placeholder with musical notes and a red background" onerror="this.src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/8e126fa0-371d-477e-8299-38d411d390f1.png'">
-                        </div>
-                        <div class="track-info">
-                            <h2 class="track-title">No song selected</h2>
-                            <p class="track-artist">Search to play music</p>
-                        </div>
-                    </div>
-
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress"></div>
-                        </div>
-                        <div class="time-info">
-                            <span class="current-time">0:00</span>
-                            <span class="duration">0:00</span>
-                        </div>
-                    </div>
-
-                    <div class="lyrics-container">
-                        Lyrics will appear here when available
-                    </div>
-
-                    <div class="controls">
-                        <button class="control-btn" id="prev-btn">⏮</button>
-                        <button class="control-btn" id="shuffle-btn">🔀</button>
-                        <button class="control-btn play-btn" id="play-btn">▶</button>
-                        <button class="control-btn" id="repeat-btn">🔁</button>
-                        <button class="control-btn" id="next-btn">⏭</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="queue-section">
-                <div class="section-header">
-                    <h3 class="queue-title">Play Queue</h3>
-                    <button id="clear-queue" class="action-btn">Clear All</button>
-                </div>
-                <div class="tabs">
-                    <button class="tab-btn active" data-tab="queue">Queue</button>
-                    <button class="tab-btn" data-tab="recommendations">Recommended</button>
-                </div>
-                <ul class="queue-list" id="queue-list">
-                    <!-- Queue items will be added by JavaScript -->
+            
+            <nav class="flex-1 px-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" class="flex items-center p-2 text-white bg-purple-800 rounded-md">
+                            <i class="fas fa-home mr-3"></i>
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition">
+                            <i class="fas fa-search mr-3"></i>
+                            <span>Search</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition">
+                            <i class="fas fa-bookmark mr-3"></i>
+                            <span>Your Library</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition">
+                            <i class="fas fa-plus-circle mr-3"></i>
+                            <span>Create Playlist</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition">
+                            <i class="fas fa-heart mr-3"></i>
+                            <span>Liked Songs</span>
+                        </a>
+                    </li>
                 </ul>
+            </nav>
+            
+            <div class="p-4 border-t border-gray-800">
+                <a href="#" class="text-gray-400 text-xs hover:underline">Legal</a>
+                <a href="#" class="text-gray-400 text-xs hover:underline ml-4">Privacy</a>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto p-6 bg-gradient-to-b from-gray-900 to-gray-800">
+            <header class="mb-8">
+                <h2 class="text-3xl font-bold mb-4">Welcome back</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Recently Played Card -->
+                    <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition cursor-pointer fade-in">
+                        <div class="flex items-center">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/eb4aa050-366b-4a41-8ad1-9d5b188d5c84.png" class="w-16 h-16 rounded-md mr-4" alt="Album cover with abstract artwork in purple and black tones" />
+                            <div>
+                                <h3 class="font-medium">Recently Played</h3>
+                                <p class="text-gray-400 text-sm">Your recent tracks</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Top Tracks Card -->
+                    <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition cursor-pointer fade-in">
+                        <div class="flex items-center">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/a11c46c6-69ee-42e4-b436-41b29d948b77.png" class="w-16 h-16 rounded-md mr-4" alt="Chart showing music statistics with a purple theme" />
+                            <div>
+                                <h3 class="font-medium">Top Tracks</h3>
+                                <p class="text-gray-400 text-sm">Your most listened tracks</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- New Releases Card -->
+                    <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition cursor-pointer fade-in">
+                        <div class="flex items-center">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2f30ee9a-0b62-4302-9ad7-ba0896c22769.png" class="w-16 h-16 rounded-md mr-4" alt="Music notes floating with bright neon colors" />
+                            <div>
+                                <h3 class="font-medium">New Releases</h3>
+                                <p class="text-gray-400 text-sm">Fresh music for you</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Playlists Section -->
+            <section class="mb-10">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Made For You</h2>
+                    <a href="#" class="text-sm text-gray-400 hover:text-white">See all</a>
+                </div>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+                    <!-- Playlist Item 1 -->
+                    <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition transform hover:scale-[1.02] fade-in">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2dd37e6c-28e8-417a-b429-8a0e12b47b9e.png" class="w-full aspect-square rounded-md mb-3" alt="Playlist cover with futuristic cityscape in purple tones" />
+                        <h3 class="font-medium">Space Vibes</h3>
+                        <p class="text-gray-400 text-sm">Ultimate chill and focus music</p>
+                    </div>
+                    
+                    <!-- Playlist Item 2 -->
+                    <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition transform hover:scale-[1.02] fade-in">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/a156b4f1-48cb-45b1-803b-8a33eeb3b994.png" class="w-full aspect-square rounded-md mb-3" alt="Playlist cover showing a galaxy with purple nebula" />
+                        <h3 class="font-medium">Cosmic Dreams</h3>
+                        <p class="text-gray-400 text-sm">For your late night sessions</p>
+                    </div>
+                    
+                    <!-- Playlist Item 3 -->
+                    <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition transform hover:scale-[1.02] fade-in">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/04f3b4e0-f942-4e96-a993-ef54b70e8be9.png" class="w-full aspect-square rounded-md mb-3" alt="Playlist cover with abstract liquid metal art in purple" />
+                        <h3 class="font-medium">Liquid Space</h3>
+                        <p class="text-gray-400 text-sm">Electronic beats for coding</p>
+                    </div>
+                    
+                    <!-- Playlist Item 4 -->
+                    <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition transform hover:scale-[1.02] fade-in">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/aa454334-a2af-4def-9a2c-1f618f65354e.png" class="w-full aspect-square rounded-md mb-3" alt="Playlist cover featuring astronauts in space with purple lighting" />
+                        <h3 class="font-medium">Astro Beats</h3>
+                        <p class="text-gray-400 text-sm">Upbeat tunes to get moving</p>
+                    </div>
+                    
+                    <!-- Playlist Item 5 -->
+                    <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition transform hover:scale-[1.02] fade-in">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0f34a02f-21ad-45dc-a2d5-61cd2ff0c18e.png" class="w-full aspect-square rounded-md mb-3" alt="Playlist cover with minimalist geometric shapes in purple gradient" />
+                        <h3 class="font-medium">Pure Energy</h3>
+                        <p class="text-gray-400 text-sm">Powerful tracks for workouts</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Artists Section -->
+            <section>
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Popular Artists</h2>
+                    <a href="#" class="text-sm text-gray-400 hover:text-white">See all</a>
+                </div>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+                    <!-- Artist 1 -->
+                    <div class="text-center fade-in">
+                        <div class="w-full aspect-square rounded-full bg-gradient-to-br from-purple-600 to-indigo-800 p-1 mb-3 mx-auto relative group">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/93967e4b-2445-4bff-aea1-383cbc714202.png" class="w-full h-full rounded-full object-cover" alt="Portrait of electronic music producer with futuristic helmet" />
+                            <div class="absolute inset-0 rounded-full bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                                <button class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-play text-white"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <h3 class="font-medium">NOVA-X</h3>
+                        <p class="text-gray-400 text-sm">Electronic</p>
+                    </div>
+                    
+                    <!-- Artist 2 -->
+                    <div class="text-center fade-in">
+                        <div class="w-full aspect-square rounded-full bg-gradient-to-br from-purple-600 to-indigo-800 p-1 mb-3 mx-auto relative group">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d8c7eb5b-fc33-49dc-bb44-7f4753d0e1e1.png" class="w-full h-full rounded-full object-cover" alt="Female vocalist with cosmic theme makeup and styling" />
+                            <div class="absolute inset-0 rounded-full bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                                <button class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-play text-white"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <h3 class="font-medium">Luna Sky</h3>
+                        <p class="text-gray-400 text-sm">Pop</p>
+                    </div>
+                    
+                    <!-- Artist 3 -->
+                    <div class="text-center fade-in">
+                        <div class="w-full aspect-square rounded-full bg-gradient-to-br from-purple-600 to-indigo-800 p-1 mb-3 mx-auto relative group">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/77446c91-8b9d-4ce4-962a-e0d7bd84d232.png" class="w-full h-full rounded-full object-cover" alt="Male singer with cyberpunk aesthetic and neon lights" />
+                            <div class="absolute inset-0 rounded-full bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                                <button class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-play text-white"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <h3 class="font-medium">Neon Dusk</h3>
+                        <p class="text-gray-400 text-sm">Synthwave</p>
+                    </div>
+                    
+                    <!-- Artist 4 -->
+                    <div class="text-center fade-in">
+                        <div class="w-full aspect-square rounded-full bg-gradient-to-br from-purple-600 to-indigo-800 p-1 mb-3 mx-auto relative group">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/5a35159d-bbaa-4d76-b43c-2f6cc1acccb3.png" class="w-full h-full rounded-full object-cover" alt="DJ with glowing equipment in a dark club setting" />
+                            <div class="absolute inset-0 rounded-full bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                                <button class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-play text-white"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <h3 class="font-medium">Starburst</h3>
+                        <p class="text-gray-400 text-sm">House</p>
+                    </div>
+                    
+                    <!-- Artist 5 -->
+                    <div class="text-center fade-in">
+                        <div class="w-full aspect-square rounded-full bg-gradient-to-br from-purple-600 to-indigo-800 p-1 mb-3 mx-auto relative group">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ad00e094-9c41-44f8-98f2-914f8f6df766.png" class="w-full h-full rounded-full object-cover" alt="Band performing on a cosmic stage with holograms" />
+                            <div class="absolute inset-0 rounded-full bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                                <button class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-play text-white"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <h3 class="font-medium">Cosmic Rays</h3>
+                        <p class="text-gray-400 text-sm">Alternative</p>
+                    </div>
+                    
+                    <!-- Artist 6 -->
+                    <div class="text-center fade-in">
+                        <div class="w-full aspect-square rounded-full bg-gradient-to-br from-purple-600 to-indigo-800 p-1 mb-3 mx-auto relative group">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b1be7221-e54c-4cd5-b0a8-d882a701be86.png" class="w-full h-full rounded-full object-cover" alt="Rapper with futuristic jewelry and space-themed outfit" />
+                            <div class="absolute inset-0 rounded-full bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                                <button class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-play text-white"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <h3 class="font-medium">Zeta Nine</h3>
+                        <p class="text-gray-400 text-sm">Hip-Hop</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Player Bar -->
+    <footer class="bg-gray-900 border-t border-gray-800 p-3 flex items-center">
+        <!-- Currently Playing -->
+        <div class="flex items-center w-1/4">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/23d9cff0-07d4-414b-a3fa-2e429db7966c.png" class="w-16 h-16 rounded-md mr-3 rotate-album" alt="Album cover of current playing track with futuristic design" />
+            <div>
+                <h4 class="font-medium">Cosmic Journey</h4>
+                <p class="text-gray-400 text-sm">Starburst</p>
+            </div>
+            <button class="ml-4 text-gray-400 hover:text-white">
+                <i class="fas fa-heart"></i>
+            </button>
+        </div>
+        
+        <!-- Player Controls -->
+        <div class="flex-1 flex flex-col items-center">
+            <div class="flex items-center space-x-4 mb-2">
+                <button class="text-gray-400 hover:text-white">
+                    <i class="fas fa-random"></i>
+                </button>
+                <button class="text-gray-400 hover:text-white">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black hover:scale-105 transition">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button class="text-gray-400 hover:text-white">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+                <button class="text-gray-400 hover:text-white">
+                    <i class="fas fa-redo"></i>
+                </button>
+            </div>
+            
+            <div class="w-full max-w-md flex items-center">
+                <span class="text-xs text-gray-400 mr-2">2:45</span>
+                <div class="flex-1 h-1 bg-gray-700 rounded-full">
+                    <div class="h-full w-1/3 bg-purple-500 rounded-full relative">
+                        <div class="w-3 h-3 bg-white rounded-full absolute -right-1.5 -top-1"></div>
+                    </div>
+                </div>
+                <span class="text-xs text-gray-400 ml-2">3:30</span>
+            </div>
+        </div>
+        
+        <!-- Volume and Other Controls -->
+        <div class="w-1/4 flex justify-end items-center space-x-3">
+            <button class="text-gray-400 hover:text-white">
+                <i class="fas fa-list"></i>
+            </button>
+            <button class="text-gray-400 hover:text-white">
+                <i class="fas fa-volume-up"></i>
+            </button>
+            <div class="w-24 h-1 bg-gray-700 rounded-full">
+                <div class="h-full w-10 bg-white rounded-full"></div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Search Modal -->
+    <div id="searchModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-start justify-center pt-20 hidden">
+        <div class="bg-gray-800 rounded-lg w-full max-w-2xl p-6 relative animate-fade-in-up">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <h3 class="text-xl font-bold mb-6">Search</h3>
+            
+            <div class="relative mb-6">
+                <input type="text" placeholder="Artists, songs, or albums" class="w-full bg-gray-700 rounded-full py-3 px-5 text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <button class="absolute right-3 top-3 text-gray-400 hover:text-white">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            
+            <div class="max-h-96 overflow-y-auto">
+                <!-- Search results would go here -->
+                <p class="text-gray-400 text-center py-10">Search for artists, songs, or albums</p>
             </div>
         </div>
     </div>
-
-    <!-- YouTube Player Container for Vercel -->
-    <div id="player-container">
-        <div id="player"></div>
-    </div>
-    <style>
-        #player-container {
-            position: fixed; 
-            top: -1000px;
-            visibility: hidden;
-        }
-        #player {
-            width: 0;
-            height: 0;
-        }
-    </style>
-
+    
     <script>
-        // DOM Elements
-        const searchInput = document.querySelector('.search-input');
-        const searchBtn = document.querySelector('.search-btn');
-        const playBtn = document.getElementById('play-btn');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const shuffleBtn = document.getElementById('shuffle-btn');
-        const repeatBtn = document.getElementById('repeat-btn');
-        const progressBar = document.querySelector('.progress');
-        const progressContainer = document.querySelector('.progress-bar');
-        const currentTimeEl = document.querySelector('.current-time');
-        const durationEl = document.querySelector('.duration');
-        const thumbnailEl = document.querySelector('.thumbnail img');
-        const trackTitleEl = document.querySelector('.track-title');
-        const trackArtistEl = document.querySelector('.track-artist');
-        const queueListEl = document.getElementById('queue-list');
-        const visualizerEl = document.getElementById('visualizer');
-
-        // App state
+        // YouTube API implementation
+        const API_KEY = 'AIzaSyAcj405P9_AMPyBucZVGAlsELs_rwd93A8';
+        
+        // DOM elements
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const sidebar = document.querySelector('.sidebar');
+        const searchModal = document.getElementById('searchModal');
+        const closeModal = document.querySelector('#searchModal button');
+        
+        // Event listeners
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+        
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && e.target !== mobileMenuBtn) {
+                sidebar.classList.remove('active');
+            }
+        });
+        
+        // Close modal when clicking outside
+        searchModal.addEventListener('click', (e) => {
+            if (e.target === searchModal) {
+                searchModal.classList.add('hidden');
+            }
+        });
+        
+        closeModal.addEventListener('click', () => {
+            searchModal.classList.add('hidden');
+        });
+        
+        // Simulate loading animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+        
+        // YouTube API functions
+        async function searchYouTube(query) {
+            try {
+                const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(query)}&type=video&key=${API_KEY}`);
+                const data = await response.json();
+                return data.items;
+            } catch (error) {
+                console.error('Error searching YouTube:', error);
+                return [];
+            }
+        }
+        
+        // Player functionality
         let player;
         let currentTrackIndex = 0;
-        let isPlaying = false;
-        let isShuffleOn = false;
-        let isRepeatOn = false;
-        let queue = [];
-        let animationFrameId;
-
-        // YouTube API setup
-        function loadYouTubeAPI() {
+        const tracks = [
+            {
+                id: 'dQw4w9WgXcQ',
+                title: 'Cosmic Journey',
+                artist: 'Starburst',
+                duration: 210,
+                cover: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/9717dd3e-2f4b-4fb9-9ed0-ed31abf4c6db.png'
+            },
+            {
+                id: '9bZkp7q19f0',
+                title: 'Space Odyssey',
+                artist: 'NOVA-X',
+                duration: 240,
+                cover: 'https://placehold.co/300x300'
+            }
+        ];
+        
+        function loadPlayer() {
+            // On YouTube iframe API ready
             const tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
             const firstScriptTag = document.getElementsByTagName('script')[0];
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            
+            window.onYouTubeIframeAPIReady = function() {
+                player = new YT.Player('player', {
+                    height: '0',
+                    width: '0',
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            };
         }
-
-        window.onYouTubeIframeAPIReady = function() {
-            player = new YT.Player('player', {
-                host: 'https://www.youtube-nocookie.com',
-                height: '0',
-                width: '0',
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
-                },
-                playerVars: {
-                    'autoplay': 0,
-                    'controls': 0,
-                    'disablekb': 1,
-                    'fs': 0,
-                    'enablejsapi': 1,
-                    'origin': window.location.origin
-                }
-            });
-        };
-
+        
         function onPlayerReady(event) {
-            console.log('Player is ready');
+            console.log('YouTube player ready');
         }
-
+        
         function onPlayerStateChange(event) {
-            switch (event.data) {
-                case YT.PlayerState.PLAYING:
-                    isPlaying = true;
-                    playBtn.textContent = '⏸';
-                    updateProgressBar();
-                    startVisualizer();
-                    break;
-                case YT.PlayerState.PAUSED:
-                    isPlaying = false;
-                    playBtn.textContent = '▶';
-                    stopVisualizer();
-                    break;
-                case YT.PlayerState.ENDED:
-                    if (isRepeatOn) {
-                        player.playVideo();
-                    } else {
-                        playNext();
-                    }
-                    break;
+            // Handle player state changes
+        }
+        
+        function playTrack(trackId) {
+            if (player) {
+                player.loadVideoById(trackId);
             }
         }
-
-        // Player controls
-        function togglePlay() {
-            if (queue.length === 0) return;
-            
-            if (isPlaying) {
-                player.pauseVideo();
-            } else {
-                player.playVideo();
-            }
-        }
-
-        function playTrack(index) {
-            if (index < 0 || index >= queue.length) return;
-            
-            currentTrackIndex = index;
-            const videoId = queue[index].id.videoId;
-            
-            if (!player) {
-                console.error('YouTube player not ready');
-                return;
-            }
-            
-            player.loadVideoById(videoId);
-            updatePlayerUI();
-            
-            // Mark active track in queue
-            const queueItems = document.querySelectorAll('.queue-item');
-            queueItems.forEach(item => item.classList.remove('active'));
-            queueItems[index].classList.add('active');
-        }
-
-        function playNext() {
-            let nextIndex;
-            
-            if (isShuffleOn) {
-                nextIndex = Math.floor(Math.random() * queue.length);
-                while (nextIndex === currentTrackIndex && queue.length > 1) {
-                    nextIndex = Math.floor(Math.random() * queue.length);
-                }
-            } else {
-                nextIndex = (currentTrackIndex + 1) % queue.length;
-            }
-            
-            playTrack(nextIndex);
-        }
-
-        function playPrev() {
-            if (player.getCurrentTime() > 2) {
-                player.seekTo(0);
-                return;
-            }
-            
-            let prevIndex;
-            
-            if (isShuffleOn) {
-                prevIndex = Math.floor(Math.random() * queue.length);
-                while (prevIndex === currentTrackIndex && queue.length > 1) {
-                    prevIndex = Math.floor(Math.random() * queue.length);
-                }
-            } else {
-                prevIndex = (currentTrackIndex - 1 + queue.length) % queue.length;
-            }
-            
-            playTrack(prevIndex);
-        }
-
-        function toggleShuffle() {
-            isShuffleOn = !isShuffleOn;
-            shuffleBtn.style.opacity = isShuffleOn ? '1' : '0.5';
-        }
-
-        function toggleRepeat() {
-            isRepeatOn = !isRepeatOn;
-            repeatBtn.style.opacity = isRepeatOn ? '1' : '0.5';
-        }
-
-        // UI updates
-        function updatePlayerUI() {
-            // Get recommendations when track changes
-            if (queue[currentTrackIndex]) {
-                getRecommendations(queue[currentTrackIndex].id.videoId).then(data => {
-                    const recContainer = document.getElementById('recommendations-list');
-                    if (recContainer) {
-                        recContainer.innerHTML = data.items.map(item => `
-                            <li class="queue-item" data-id="${item.id.videoId}">
-                                <div class="queue-thumbnail">
-                                    <img src="${item.snippet.thumbnails?.default?.url || 'placeholder'}" 
-                                         alt="${item.snippet.title}">
-                                </div>
-                                <div class="queue-item-info">
-                                    <div class="queue-item-title">${item.snippet.title}</div>
-                                    <div class="queue-item-artist">${item.snippet.channelTitle}</div>
-                                </div>
-                            </li>
-                        `).join('');
-                    }
-                });
-            }
-            const currentTrack = queue[currentTrackIndex];
-            trackTitleEl.textContent = currentTrack.snippet.title;
-            trackArtistEl.textContent = currentTrack.snippet.channelTitle;
-            
-            // Use higher quality thumbnail if available
-            const thumbnailUrl = currentTrack.snippet.thumbnails?.maxres?.url || 
-                                currentTrack.snippet.thumbnails?.high?.url || 
-                                currentTrack.snippet.thumbnails?.medium?.url || 
-                                currentTrack.snippet.thumbnails?.default?.url;
-            
-            thumbnailEl.src = thumbnailUrl || 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d57c2235-f373-4b23-a057-0af8dd5b5c0c.png';
-        }
-
-        function updateProgressBar() {
-            if (!isPlaying) return;
-            
-            const duration = player.getDuration();
-            const currentTime = player.getCurrentTime();
-            const progressPercent = (currentTime / duration) * 100;
-            
-            progressBar.style.width = `${progressPercent}%`;
-            
-            currentTimeEl.textContent = formatTime(currentTime);
-            durationEl.textContent = formatTime(duration);
-            
-            animationFrameId = requestAnimationFrame(updateProgressBar);
-        }
-
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-
-        // Visualizer
-        function startVisualizer() {
-            stopVisualizer();
-            
-            // Clear previous bars
-            visualizerEl.innerHTML = '';
-            
-            // Create 50 bars for the visualizer
-            for (let i = 0; i < 50; i++) {
-                const bar = document.createElement('div');
-                bar.className = 'visualizer-bar';
-                visualizerEl.appendChild(bar);
-            }
-            
-            animateVisualizer();
-        }
-
-        function animateVisualizer() {
-            if (!isPlaying) return;
-            
-            const bars = visualizerEl.querySelectorAll('.visualizer-bar');
-            bars.forEach(bar => {
-                const height = Math.random() * 60 + 5;
-                bar.style.height = `${height}px`;
-            });
-            
-            animationFrameId = requestAnimationFrame(animateVisualizer);
-        }
-
-        function stopVisualizer() {
-            cancelAnimationFrame(animationFrameId);
-        }
-
-        // Get recommended videos
-        async function getRecommendations(videoId) {
-            try {
-                const response = await fetch(
-                    `https://api.allorigins.win/get?url=${encodeURIComponent(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&type=video&relatedToVideoId=${videoId}&key=AIzaSyAcj405P9_AMPyBucZVGAlsELs_rwd93A8`)}`
-                );
-                return await response.json();
-            } catch (error) {
-                console.error('Error getting recommendations:', error);
-                return {items: []};
-            }
-        }
-
-        // Search functionality
-        async function searchTracks(query) {
-            if (!query.trim()) return;
-            
-            try {
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(query)}&type=video&key=AIzaSyAcj405P9_AMPyBucZVGAlsELs_rwd93A8`)}`);
-                
-                if (!response.ok) {
-                    throw new Error('Failed to fetch results');
-                }
-                
-                const data = await response.json();
-                // Handle both direct response and proxy response
-                if (data.contents) {
-                    queue = JSON.parse(data.contents).items;
-                } else {
-                    queue = data.items || [];
-                }
-                renderQueue();
-                
-                // Don't auto-play, just update queue
-                if (queue.length > 0) {
-                    updatePlayerUI();
-                }
-            } catch (error) {
-                console.error('Error searching tracks:', error);
-                alert('Failed to search tracks. Please try again.');
-            }
-        }
-
-        function renderQueue() {
-            queueListEl.innerHTML = '';
-            
-            queue.forEach((item, index) => {
-                const queueItem = document.createElement('li');
-                queueItem.className = 'queue-item';
-                queueItem.addEventListener('click', () => playTrack(index));
-                
-                const thumbnail = item.snippet.thumbnails?.default?.url || 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/65bf692c-f051-421e-8914-d2fb31a07791.png';
-                
-                queueItem.innerHTML = `
-                    <div class="queue-thumbnail">
-                        <img src="${thumbnail}" alt="Thumbnail for ${item.snippet.title}" onerror="this.src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1eb1c74d-d624-4951-964f-aec8b22841f7.png'">
-                    </div>
-                    <div class="queue-item-info">
-                        <div class="queue-item-title">${item.snippet.title}</div>
-                        <div class="queue-item-artist">${item.snippet.channelTitle}</div>
-                    </div>
-                `;
-                
-                queueListEl.appendChild(queueItem);
-            });
-        }
-
-        // Event listeners
-        searchBtn.addEventListener('click', () => searchTracks(searchInput.value));
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                searchTracks(searchInput.value);
-            }
-        });
-
-        playBtn.addEventListener('click', togglePlay);
-        prevBtn.addEventListener('click', playPrev);
-        nextBtn.addEventListener('click', playNext);
-        shuffleBtn.addEventListener('click', toggleShuffle);
-        repeatBtn.addEventListener('click', toggleRepeat);
-
-        progressContainer.addEventListener('click', (e) => {
-            if (!player || !isPlaying) return;
-            
-            const width = progressContainer.clientWidth;
-            const clickX = e.offsetX;
-            const duration = player.getDuration();
-            const seekTime = (clickX / width) * duration;
-            
-            player.seekTo(seekTime, true);
-        });
-
-        // Ad blocking
-        function blockYouTubeAds() {
-            document.addEventListener('DOMContentLoaded', () => {
-                const observer = new MutationObserver(() => {
-                    document.querySelectorAll('.ytp-ad-skip-button, .ytp-ad-overlay-close-button').forEach(btn => {
-                        btn.click();
-                    });
-                });
-                
-                observer.observe(document.body, {
-                    childList: true,
-                    subtree: true
-                });
-            });
-        }
-
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', () => {
-            if(window.location.protocol === 'file:') {
-                alert('Note: For full functionality, please serve this file from a local server.\nBasic playback will work but some features may be limited.');
-            }
-            loadYouTubeAPI();
-            blockYouTubeAds();
-            
-            // Typeahead search
-            let searchTimeout;
-            searchInput.addEventListener('input', () => {
-                clearTimeout(searchTimeout);
-                if(searchInput.value.length > 2) {
-                    searchTimeout = setTimeout(() => {
-                        searchTracks(searchInput.value);
-                    }, 500);
-                }
-            });
-        });
+        
+        // Initialize
+        loadPlayer();
     </script>
 </body>
 </html>
+
