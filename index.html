@@ -211,9 +211,23 @@
 
         .progress {
             height: 100%;
-            background: var(--primary);
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
             width: 0;
             transition: width 0.1s;
+            position: relative;
+            border-radius: 3px;
+        }
+
+        .progress::after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: -3px;
+            width: 10px;
+            height: 10px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary);
         }
 
         .time-info {
@@ -261,25 +275,47 @@
             transform: scale(1.05);
         }
 
-        .visualizer {
-            height: 60px;
+        .lyrics-container {
+            height: 200px;
             margin: 20px 0;
-            display: flex;
-            align-items: flex-end;
-            gap: 2px;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
         }
 
-        .visualizer-bar {
-            background: linear-gradient(to top, var(--primary), var(--primary-light));
-            width: 4px;
-            border-radius: 4px;
-            height: 5px;
-            transition: height 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
-            transform-origin: bottom;
+        .lyrics-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .lyrics-container::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
         }
 
         .queue-section {
             flex: 1;
+            height: 70vh;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .queue-section::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .queue-section::-webkit-scrollbar-track {
+            background: var(--card-bg);
+            border-radius: 3px;
+        }
+
+        .queue-section::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
         }
 
         .section-header {
@@ -447,8 +483,8 @@
                         </div>
                     </div>
 
-                    <div class="visualizer" id="visualizer">
-                        <!-- Visualizer bars will be added by JavaScript -->
+                    <div class="lyrics-container">
+                        Lyrics will appear here when available
                     </div>
 
                     <div class="controls">
@@ -477,18 +513,21 @@
         </div>
     </div>
 
-    <!-- YouTube player with ad blocking -->
-    <div id="player-container" style="position:absolute;top:-9999px">
+    <!-- YouTube Player Container for Vercel -->
+    <div id="player-container">
         <div id="player"></div>
-        <script>
-            // Intercept YouTube ad requests
-            const originalXHROpen = window.XMLHttpRequest.prototype.open;
-            window.XMLHttpRequest.prototype.open = function() {
-                if (arguments[1].includes('getAds')) return;
-                originalXHROpen.apply(this, arguments);
-            };
-        </script>
     </div>
+    <style>
+        #player-container {
+            position: fixed; 
+            top: -1000px;
+            visibility: hidden;
+        }
+        #player {
+            width: 0;
+            height: 0;
+        }
+    </style>
 
     <script>
         // DOM Elements
@@ -528,11 +567,20 @@
 
         window.onYouTubeIframeAPIReady = function() {
             player = new YT.Player('player', {
+                host: 'https://www.youtube-nocookie.com',
                 height: '0',
                 width: '0',
                 events: {
                     'onReady': onPlayerReady,
                     'onStateChange': onPlayerStateChange
+                },
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'disablekb': 1,
+                    'fs': 0,
+                    'enablejsapi': 1,
+                    'origin': window.location.origin
                 }
             });
         };
@@ -733,7 +781,7 @@
         async function getRecommendations(videoId) {
             try {
                 const response = await fetch(
-                    `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&type=video&relatedToVideoId=${videoId}&key=AIzaSyAcj405P9_AMPyBucZVGAlsELs_rwd93A8`
+                    `https://api.allorigins.win/get?url=${encodeURIComponent(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&type=video&relatedToVideoId=${videoId}&key=AIzaSyAcj405P9_AMPyBucZVGAlsELs_rwd93A8`)}`
                 );
                 return await response.json();
             } catch (error) {
@@ -747,18 +795,24 @@
             if (!query.trim()) return;
             
             try {
-                const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(query)}&type=video&key=AIzaSyAcj405P9_AMPyBucZVGAlsELs_rwd93A8`);
+                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(query)}&type=video&key=AIzaSyAcj405P9_AMPyBucZVGAlsELs_rwd93A8`)}`);
                 
                 if (!response.ok) {
                     throw new Error('Failed to fetch results');
                 }
                 
                 const data = await response.json();
-                queue = data.items;
+                // Handle both direct response and proxy response
+                if (data.contents) {
+                    queue = JSON.parse(data.contents).items;
+                } else {
+                    queue = data.items || [];
+                }
                 renderQueue();
                 
+                // Don't auto-play, just update queue
                 if (queue.length > 0) {
-                    playTrack(0);
+                    updatePlayerUI();
                 }
             } catch (error) {
                 console.error('Error searching tracks:', error);
@@ -815,8 +869,41 @@
             player.seekTo(seekTime, true);
         });
 
+        // Ad blocking
+        function blockYouTubeAds() {
+            document.addEventListener('DOMContentLoaded', () => {
+                const observer = new MutationObserver(() => {
+                    document.querySelectorAll('.ytp-ad-skip-button, .ytp-ad-overlay-close-button').forEach(btn => {
+                        btn.click();
+                    });
+                });
+                
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+            });
+        }
+
         // Initialize app
-        loadYouTubeAPI();
+        document.addEventListener('DOMContentLoaded', () => {
+            if(window.location.protocol === 'file:') {
+                alert('Note: For full functionality, please serve this file from a local server.\nBasic playback will work but some features may be limited.');
+            }
+            loadYouTubeAPI();
+            blockYouTubeAds();
+            
+            // Typeahead search
+            let searchTimeout;
+            searchInput.addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                if(searchInput.value.length > 2) {
+                    searchTimeout = setTimeout(() => {
+                        searchTracks(searchInput.value);
+                    }, 500);
+                }
+            });
+        });
     </script>
 </body>
 </html>
