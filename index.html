@@ -323,6 +323,9 @@
         </main>
     </div>
     
+    <!-- Hidden YouTube Player -->
+    <div id="player"></div>
+
     <!-- Player Bar -->
     <footer class="bg-gray-900 border-t border-gray-800 p-3 flex items-center">
         <!-- Currently Playing -->
@@ -343,13 +346,13 @@
                 <button class="text-gray-400 hover:text-white">
                     <i class="fas fa-random"></i>
                 </button>
-                <button class="text-gray-400 hover:text-white">
+                <button class="text-gray-400 hover:text-white" onclick="prevTrack()">
                     <i class="fas fa-step-backward"></i>
                 </button>
-                <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black hover:scale-105 transition">
-                    <i class="fas fa-play"></i>
+                <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black hover:scale-105 transition" id="playPauseBtn">
+                    <i class="fas fa-play" id="playPauseIcon"></i>
                 </button>
-                <button class="text-gray-400 hover:text-white">
+                <button class="text-gray-400 hover:text-white" onclick="nextTrack()">
                     <i class="fas fa-step-forward"></i>
                 </button>
                 <button class="text-gray-400 hover:text-white">
@@ -473,7 +476,7 @@
                 title: 'Space Odyssey',
                 artist: 'NOVA-X',
                 duration: 240,
-                cover: 'https://placehold.co/300x300'
+                cover: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/6193d63e-2625-46b9-b049-f1e390e5a8fd.png'
             }
         ];
         
@@ -510,7 +513,101 @@
             }
         }
         
+        // Player state variables
+        let isPlaying = false;
+        let currentVolume = 50;
+
+        // Initialize player
+        loadPlayer();
+
+        // Add click listeners to all play buttons on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[data-track-id]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const trackId = this.getAttribute('data-track-id');
+                    playTrack(trackId);
+                });
+            });
+            
+            // Search functionality
+            document.querySelector('#searchModal [type="text"]').addEventListener('keyup', async function(e) {
+                if(e.key === 'Enter') {
+                    const results = await searchYouTube(this.value);
+                    displaySearchResults(results);
+                }
+            });
+        });
+
+        // Update player UI
+        function updatePlayerUI() {
+            const track = tracks[currentTrackIndex];
+            document.querySelector('#playerBarTitle').textContent = track.title;
+            document.querySelector('#playerBarArtist').textContent = track.artist;
+            document.querySelector('#playerBarCover').src = track.cover;
+            
+            if(isPlaying) {
+                document.querySelector('#playPauseIcon').className = 'fas fa-pause';
+            } else {
+                document.querySelector('#playPauseIcon').className = 'fas fa-play';
+            }
+        }
+
+        function playTrack(trackId) {
+            if(player) {
+                player.loadVideoById(trackId);
+                player.playVideo();
+                isPlaying = true;
+                updatePlayerUI();
+            }
+        }
+
+        function togglePlay() {
+            if(isPlaying) {
+                player.pauseVideo();
+            } else {
+                player.playVideo();
+            }
+            isPlaying = !isPlaying;
+            updatePlayerUI();
+        }
+
+        function prevTrack() {
+            currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+            playTrack(tracks[currentTrackIndex].id);
+        }
+
+        function nextTrack() {
+            currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+            playTrack(tracks[currentTrackIndex].id);
+        }
+
+        // Search display function
+        function displaySearchResults(results) {
+            const resultsContainer = document.querySelector('#searchModal .overflow-y-auto');
+            resultsContainer.innerHTML = '';
+            
+            results.forEach(video => {
+                const item = document.createElement('div');
+                item.className = 'p-3 hover:bg-gray-700 cursor-pointer';
+                item.innerHTML = `
+                    <div class="flex items-center">
+                        <img src="${video.snippet.thumbnails.default.url}" class="w-12 h-12 rounded mr-3" />
+                        <div>
+                            <h4 class="font-medium">${video.snippet.title}</h4>
+                            <p class="text-gray-400 text-sm">${video.snippet.channelTitle}</p>
+                        </div>
+                    </div>
+                `;
+                item.addEventListener('click', () => {
+                    playTrack(video.id.videoId);
+                    searchModal.classList.add('hidden');
+                });
+                resultsContainer.appendChild(item);
+            });
+        }
+
         // Initialize
+        document.querySelector('#playPauseBtn').addEventListener('click', togglePlay);
         loadPlayer();
     </script>
 </body>
